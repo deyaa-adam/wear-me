@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WEAR-ME · Predicting Insulin Resistance with Wearables</title>
+<style>
+:root{--bg:#f6f9fb;--card:#fff;--ink:#0f2433;--mute:#53687a;--line:#dbe5ec;--a:#0e6fa0;--b:#e8742a;--g:#1f7a3f;--soft:#e6f2f8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1620;--card:#13222f;--ink:#e8f1f7;--mute:#9db2c3;--line:#223647;--a:#4fb3e3;--b:#f09a5c;--g:#5fc58a;--soft:#12303f}}
+:root[data-theme="dark"]{--bg:#0b1620;--card:#13222f;--ink:#e8f1f7;--mute:#9db2c3;--line:#223647;--a:#4fb3e3;--b:#f09a5c;--g:#5fc58a;--soft:#12303f}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:960px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+nav .w{display:flex;gap:18px;align-items:center;overflow-x:auto;white-space:nowrap;padding-top:12px;padding-bottom:12px}
+nav b{color:var(--a);margin-right:auto}
+nav a{color:var(--mute);text-decoration:none;font-size:14px}
+nav a:hover{color:var(--a)}
+header{padding:64px 0 48px}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 16px;letter-spacing:-.02em}
+h1 span{color:var(--a)}
+.lead{font-size:19px;color:var(--mute);max-width:680px}
+.pill{display:inline-block;background:var(--soft);color:var(--a);border-radius:99px;padding:4px 14px;font-size:13px;font-weight:600;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:36px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat strong{display:block;font-size:30px;color:var(--a)}
+.stat small{color:var(--mute)}
+section{padding:44px 0;border-top:1px solid var(--line)}
+h2{font-size:28px;margin:0 0 8px}
+.sub{color:var(--mute);margin:0 0 24px;max-width:700px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h3{margin:0 0 6px;font-size:17px}
+.card p{margin:0;color:var(--mute);font-size:15px}
+.step{font-size:12px;font-weight:700;color:var(--b);letter-spacing:.08em}
+.bars{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+.bars h3{margin:0 0 14px;font-size:17px}
+.row{display:grid;grid-template-columns:minmax(120px,200px) 1fr 48px;gap:12px;align-items:center;margin:10px 0;font-size:14px}
+.track{background:var(--soft);border-radius:8px;height:18px;overflow:hidden}
+.fill{height:100%;border-radius:8px;background:var(--mute)}
+.fill.hi{background:var(--a)}
+.row span:last-child{font-weight:700;text-align:right}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mute);font-weight:600}
+.scroll{overflow-x:auto}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.av{width:48px;height:48px;border-radius:50%;background:var(--soft);color:var(--a);display:grid;place-items:center;font-weight:700;margin-bottom:10px}
+.note{background:var(--soft);border-radius:12px;padding:14px 18px;color:var(--ink);font-size:15px}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--mute);font-size:14px}
+@media(max-width:560px){.row{grid-template-columns:1fr 40px}.row .track{grid-column:1/-1;order:3}.row span:first-child{grid-column:1/2}}
+
+.demo{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+@media(max-width:760px){.demo{grid-template-columns:1fr}}
+.ctl{display:grid;grid-template-columns:110px 1fr 56px;gap:8px;align-items:center;font-size:14px;margin:7px 0}
+.ctl input[type=range]{width:100%;accent-color:var(--a)}
+.ctl output{text-align:right;font-weight:700}
+.tg{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 12px;font-size:14px}
+.btn{background:var(--a);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;font-size:14px}
+:root:not([data-theme="light"]) .btn{color:#06121b}
+.btn.alt{background:var(--soft);color:var(--a)}
+.big{font-size:44px;font-weight:800;line-height:1}
+.gauge{position:relative;height:22px;border-radius:11px;background:linear-gradient(90deg,var(--g),#e0b83a,var(--b));margin:14px 0 6px}
+.gauge i{position:absolute;top:-5px;width:4px;height:32px;background:var(--ink);border-radius:2px;transform:translateX(-2px)}
+.cb{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:center;font-size:13px;margin:4px 0}
+.cb div{position:relative;height:12px}
+.cb b{position:absolute;top:0;height:12px;border-radius:3px}
+.cb div:before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--line)}
+.tag{display:inline-block;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700}
+</style>
+</head>
+<body>
+<nav><div class="w"><b>WEAR-ME</b><a href="#problem">Problem</a><a href="#method">Method</a><a href="#results">Results</a><a href="#agent">IR Agent</a><a href="#demo">Live Demo</a><a href="#ours">Our Work</a><a href="#team">Team</a></div></nav>
+
+<header><div class="w">
+<div class="pill">Project 1 · Multimodal AI for metabolic health</div>
+<h1>Predicting <span>insulin resistance</span> from wearables and routine blood tests</h1>
+<p class="lead">We studied the WEAR-ME clinical study, which blends continuous smartwatch data with standard lab biomarkers to flag insulin resistance years before type 2 diabetes appears, without an invasive clamp test.</p>
+<div class="stats">
+<div class="stat"><strong>1,165</strong><small>participants in the discovery cohort</small></div>
+<div class="stat"><strong>0.80</strong><small>AUROC (HOMA-IR cut-off 2.9)</small></div>
+<div class="stat"><strong>40M h</strong><small>of sensor data behind the WFM</small></div>
+<div class="stat"><strong>82%</strong><small>reliance on wearables with WFM, up from 43%</small></div>
+</div></div></header>
+
+<section id="problem"><div class="w">
+<h2>Why it matters</h2>
+<p class="sub">Insulin resistance (IR) develops silently, often long before HbA1c changes. The median HbA1c in the cohort was a normal 5.4%, so glycemic screening alone would miss many participants.</p>
+<div class="grid">
+<div class="card"><h3>Clamp test</h3><p>The gold standard, but highly invasive and limited to research settings.</p></div>
+<div class="card"><h3>OGTT</h3><p>Takes 2+ hours and needs several blood draws.</p></div>
+<div class="card"><h3>HOMA-IR</h3><p>Used as the ground truth here: below 1.5 insulin sensitive, 1.5 to 2.9 impaired, above 2.9 insulin resistant.</p></div>
+</div></div></section>
+
+<section id="method"><div class="w">
+<h2>How the framework works</h2>
+<p class="sub">Three input streams feed a gradient-boosting model that predicts HOMA-IR, then classifies IR with a threshold.</p>
+<div class="grid">
+<div class="card"><div class="step">STEP 1</div><h3>Wearable signals</h3><p>Resting heart rate, HRV, daily steps, sleep stages and circadian patterns from a Fitbit or Pixel Watch.</p></div>
+<div class="card"><div class="step">STEP 2</div><h3>Wearable Foundation Model</h3><p>A WFM pre-trained on 1.4 million people turns raw time series into embeddings that capture non-linear patterns.</p></div>
+<div class="card"><div class="step">STEP 3</div><h3>Fusion with labs</h3><p>Embeddings are reduced with PCA and combined with demographics, fasting glucose and the lipid panel.</p></div>
+<div class="card"><div class="step">STEP 4</div><h3>Explain and communicate</h3><p>SHAP explains each prediction, and an LLM agent turns it into patient-friendly guidance.</p></div>
+</div></div></section>
+
+<section id="results"><div class="w">
+<h2>Results</h2>
+<p class="sub">Adding WFM wearable embeddings improved every model we looked at.</p>
+<div class="bars"><h3>Independent validation cohort (n = 72), AUROC</h3>
+<div class="row"><span>Demographics only</span><div class="track"><div class="fill" style="width:66%"></div></div><span>0.66</span></div>
+<div class="row"><span>Demographics + WFM</span><div class="track"><div class="fill hi" style="width:75%"></div></div><span>0.75</span></div>
+<div class="row"><span>Full clinical panel</span><div class="track"><div class="fill" style="width:76%"></div></div><span>0.76</span></div>
+<div class="row"><span>Full panel + WFM</span><div class="track"><div class="fill hi" style="width:88%"></div></div><span>0.88</span></div>
+</div>
+<div class="bars"><h3>Feature reliance on wearable data (SHAP)</h3>
+<div class="row"><span>Conventional ML</span><div class="track"><div class="fill" style="width:43%"></div></div><span>43%</span></div>
+<div class="row"><span>With WFM embeddings</span><div class="track"><div class="fill hi" style="width:82%"></div></div><span>82%</span></div>
+</div>
+<div class="card scroll"><h3>Discovery cohort performance</h3>
+<table><tr><th>Setting</th><th>AUROC</th><th>Sensitivity</th><th>Specificity</th></tr>
+<tr><td>Wearables + demographics + fasting glucose, cut-off 2.9</td><td>0.80</td><td>76%</td><td>84%</td></tr>
+<tr><td>Same model, cut-off 2.5</td><td>n/a</td><td>82%</td><td>78%</td></tr></table></div>
+</div></section>
+
+<section id="agent"><div class="w">
+<h2>The IR Agent</h2>
+<p class="sub">A ReAct-style agent built on Gemini 2.0 Flash explains risk scores and answers follow-up questions. Five board-certified endocrinologists compared it with a baseline LLM.</p>
+<div class="grid">
+<div class="card"><h3>80%</h3><p>preferred it for comprehensiveness</p></div>
+<div class="card"><h3>92%</h3><p>preferred it for trustworthiness</p></div>
+<div class="card"><h3>73.3%</h3><p>preferred it for personalization</p></div>
+<div class="card"><h3>96%</h3><p>of responses rated safe</p></div>
+</div></div></section>
+
+
+<section id="demo"><div class="w">
+<h2>Live demo</h2>
+<p class="sub">A simulation trained on the real WEAR-ME dataset (n = <span id="dn"></span>). Move the sliders, or load an actual participant and compare the prediction with their measured HOMA-IR.</p>
+<div class="demo">
+<div class="card">
+<div class="tg"><label><input type="checkbox" id="uL" checked> Blood biomarkers</label><label><input type="checkbox" id="uW" checked> Wearable signals</label></div>
+<div id="ctls"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="rnd">Load real participant</button><button class="btn alt" id="rst">Reset to median</button></div>
+<p id="truth" class="note" style="margin-top:12px;display:none"></p>
+</div>
+<div class="card">
+<h3>Predicted risk of insulin resistance</h3>
+<div class="big" id="pr">0%</div>
+<div class="gauge"><i id="gp"></i></div>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute)"><span>Low</span><span>High</span></div>
+<p style="margin:12px 0"><span class="tag" id="tagr"></span> <span style="color:var(--mute);font-size:14px">IR means HOMA-IR above 2.9; 50% is the decision cut-off.</span></p>
+<h3 style="font-size:15px;margin:16px 0 8px">What is driving this prediction</h3>
+<div id="cbs"></div>
+<p style="color:var(--mute);font-size:13px;margin:14px 0 0">Held-out AUROC of this simplified model: <b id="au"></b>. Research prototype, not medical advice.</p>
+</div></div>
+<p class="note" style="margin-top:16px">This is a transparent logistic regression on summary features, not the paper’s Wearable Foundation Model. It runs fully in your browser, and wearables contribute less here than in the paper because no foundation-model embeddings are used.</p>
+</div></section>
+<section id="ours"><div class="w">
+<h2>Our work</h2>
+<p class="sub">Beyond reviewing the paper, we reproduced the exploratory analysis on the study data in Google Colab.</p>
+<div class="grid">
+<div class="card"><h3>Steps vs HOMA-IR</h3><p>Scatter with LOWESS trend, colored by BMI: more activity, lower insulin resistance.</p></div>
+<div class="card"><h3>Resting heart rate</h3><p>Violin plots across IS, impaired and IR groups.</p></div>
+<div class="card"><h3>Correlation matrix</h3><p>Wearable features and blood biomarkers against HOMA-IR.</p></div>
+<div class="card"><h3>Lipids and BMI</h3><p>Triglycerides, HDL and BMI relationships with HOMA-IR.</p></div>
+</div>
+<p class="note" style="margin-top:18px">Add your own figures and live demo here. Replace these cards with images from your Colab notebooks.</p>
+</div></section>
+
+<section><div class="w">
+<h2>Next: Project 2</h2>
+<p class="sub">We move from understanding the model to hands-on development and optimization of the pipeline.</p>
+</div></section>
+
+<section id="team"><div class="w">
+<h2>Team</h2>
+<div class="team">
+<div class="card"><div class="av">QA</div><h3>Qabas Arabiat <br>ID: 2230953</h3></div>
+<div class="card"><div class="av">MA</div><h3>Marwa Alrafayia <br>ID: 2239393</h3></div>
+<div class="card"><div class="av">DA</div><h3>Doha Aldababseh <br>ID: 2232197</h3></div>
+<div class="card"><div class="av">YG</div><h3>Dr. Yazan Gharaibeh <br>(Supervisor)</h3></div>
+</div></div></section>
+
+<footer><div class="w">Based on “Insulin resistance prediction from wearables and routine blood biomarkers” and the WEAR-ME clinical study. A student project; all figures above come from that paper.</div></footer>
+<script>
+const M={"features":["age","bmi","male","glucose","hdl","triglycerides","RHR_FreeLiving_median","HRV_FreeLiving_median","STEPS_Daily_median","SLEEP_Duration_median"],"mean":[47.047210300429185,29.162771015141676,0.4334763948497854,92.05836909871245,58.18540772532189,105.77768240343347,66.85278969957082,30.719039270386265,7527.510729613734,451.9669527896996],"scale":[12.514383259070955,6.678851320584109,0.4955548506046716,13.157351798634728,15.360949092507314,61.75566850139053,8.161592426115302,16.460299510244838,3750.9694325893456,65.96168401176018],"coef":[0.03866936580162593,0.8117649359216647,-0.05288712080533318,1.241093591565584,-0.43126345995264614,0.5115674780794398,0.3016579945613173,0.1131755963731927,-0.1375672274336546,-0.18372361969664472],"b":-1.592233195280819,"med":{"age":45.0,"bmi":27.978576171996096,"male":0.0,"glucose":90.0,"hdl":56.0,"triglycerides":89.0,"RHR_FreeLiving_median":66.0,"HRV_FreeLiving_median":27.11675,"STEPS_Daily_median":6909.0,"SLEEP_Duration_median":459.0},"q":{"age":[26.0,73.0],"bmi":[19.438984605438634,46.99520720933279],"male":[0.0,1.0],"glucose":[73.0,130.0],"hdl":[34.28,97.0],"triglycerides":[41.28,282.0],"RHR_FreeLiving_median":[52.0,86.0],"HRV_FreeLiving_median":[10.5828,74.85084],"STEPS_Daily_median":[2205.92,17408.620000000003],"SLEEP_Duration_median":[293.0,566.08]},"people":[{"age":37.0,"bmi":37.0,"male":0.0,"glucose":92.0,"hdl":47.0,"triglycerides":89.0,"RHR_FreeLiving_median":68.0,"HRV_FreeLiving_median":25.0,"STEPS_Daily_median":3233.0,"SLEEP_Duration_median":468.0,"homa":5.66},{"age":32.0,"bmi":32.8,"male":1.0,"glucose":101.0,"hdl":48.0,"triglycerides":96.0,"RHR_FreeLiving_median":83.0,"HRV_FreeLiving_median":26.5,"STEPS_Daily_median":11854.0,"SLEEP_Duration_median":421.5,"homa":6.13},{"age":45.0,"bmi":31.2,"male":0.0,"glucose":90.0,"hdl":52.0,"triglycerides":156.0,"RHR_FreeLiving_median":75.0,"HRV_FreeLiving_median":27.1,"STEPS_Daily_median":8178.5,"SLEEP_Duration_median":433.0,"homa":2.09},{"age":67.0,"bmi":29.0,"male":0.0,"glucose":92.0,"hdl":67.0,"triglycerides":76.0,"RHR_FreeLiving_median":59.0,"HRV_FreeLiving_median":29.7,"STEPS_Daily_median":6441.0,"SLEEP_Duration_median":306.0,"homa":1.73},{"age":39.0,"bmi":23.6,"male":1.0,"glucose":90.0,"hdl":64.0,"triglycerides":69.0,"RHR_FreeLiving_median":68.0,"HRV_FreeLiving_median":28.6,"STEPS_Daily_median":4615.0,"SLEEP_Duration_median":504.0,"homa":0.8},{"age":31.0,"bmi":33.7,"male":0.0,"glucose":91.0,"hdl":59.0,"triglycerides":88.0,"RHR_FreeLiving_median":64.0,"HRV_FreeLiving_median":48.3,"STEPS_Daily_median":6051.0,"SLEEP_Duration_median":504.0,"homa":1.57},{"age":42.0,"bmi":21.8,"male":1.0,"glucose":88.0,"hdl":49.0,"triglycerides":83.0,"RHR_FreeLiving_median":54.0,"HRV_FreeLiving_median":52.0,"STEPS_Daily_median":8645.0,"SLEEP_Duration_median":473.0,"homa":1.52},{"age":41.0,"bmi":38.0,"male":1.0,"glucose":84.0,"hdl":44.0,"triglycerides":170.0,"RHR_FreeLiving_median":63.0,"HRV_FreeLiving_median":34.4,"STEPS_Daily_median":7923.5,"SLEEP_Duration_median":388.0,"homa":2.45},{"age":37.0,"bmi":29.1,"male":0.0,"glucose":91.0,"hdl":52.0,"triglycerides":163.0,"RHR_FreeLiving_median":69.0,"HRV_FreeLiving_median":24.9,"STEPS_Daily_median":4153.0,"SLEEP_Duration_median":523.5,"homa":4.58},{"age":23.0,"bmi":30.1,"male":1.0,"glucose":92.0,"hdl":43.0,"triglycerides":148.0,"RHR_FreeLiving_median":79.0,"HRV_FreeLiving_median":23.0,"STEPS_Daily_median":8922.0,"SLEEP_Duration_median":340.5,"homa":5.66},{"age":39.0,"bmi":26.9,"male":1.0,"glucose":97.0,"hdl":61.0,"triglycerides":107.0,"RHR_FreeLiving_median":74.0,"HRV_FreeLiving_median":29.7,"STEPS_Daily_median":9684.0,"SLEEP_Duration_median":447.5,"homa":1.48},{"age":41.0,"bmi":50.8,"male":0.0,"glucose":157.0,"hdl":39.0,"triglycerides":124.0,"RHR_FreeLiving_median":75.0,"HRV_FreeLiving_median":22.9,"STEPS_Daily_median":7068.0,"SLEEP_Duration_median":375.0,"homa":12.64},{"age":30.0,"bmi":24.3,"male":0.0,"glucose":71.0,"hdl":56.0,"triglycerides":43.0,"RHR_FreeLiving_median":74.0,"HRV_FreeLiving_median":31.3,"STEPS_Daily_median":6648.5,"SLEEP_Duration_median":452.0,"homa":1.16},{"age":34.0,"bmi":40.9,"male":1.0,"glucose":90.0,"hdl":32.0,"triglycerides":82.0,"RHR_FreeLiving_median":73.0,"HRV_FreeLiving_median":38.9,"STEPS_Daily_median":9549.5,"SLEEP_Duration_median":551.0,"homa":2.11},{"age":70.0,"bmi":21.6,"male":0.0,"glucose":87.0,"hdl":46.0,"triglycerides":66.0,"RHR_FreeLiving_median":64.0,"HRV_FreeLiving_median":12.5,"STEPS_Daily_median":11432.0,"SLEEP_Duration_median":475.0,"homa":0.84},{"age":50.0,"bmi":22.9,"male":0.0,"glucose":85.0,"hdl":75.0,"triglycerides":91.0,"RHR_FreeLiving_median":83.0,"HRV_FreeLiving_median":9.2,"STEPS_Daily_median":4374.0,"SLEEP_Duration_median":444.0,"homa":1.01},{"age":29.0,"bmi":35.7,"male":0.0,"glucose":77.0,"hdl":51.0,"triglycerides":69.0,"RHR_FreeLiving_median":81.0,"HRV_FreeLiving_median":26.2,"STEPS_Daily_median":15385.0,"SLEEP_Duration_median":494.0,"homa":0.99},{"age":74.0,"bmi":29.3,"male":1.0,"glucose":100.0,"hdl":43.0,"triglycerides":78.0,"RHR_FreeLiving_median":73.0,"HRV_FreeLiving_median":14.2,"STEPS_Daily_median":2525.0,"SLEEP_Duration_median":503.0,"homa":4.1},{"age":31.0,"bmi":34.3,"male":0.0,"glucose":94.0,"hdl":49.0,"triglycerides":149.0,"RHR_FreeLiving_median":73.0,"HRV_FreeLiving_median":35.3,"STEPS_Daily_median":7976.0,"SLEEP_Duration_median":468.0,"homa":3.9},{"age":57.0,"bmi":24.4,"male":1.0,"glucose":80.0,"hdl":76.0,"triglycerides":72.0,"RHR_FreeLiving_median":73.0,"HRV_FreeLiving_median":10.4,"STEPS_Daily_median":11906.0,"SLEEP_Duration_median":455.5,"homa":1.22},{"age":43.0,"bmi":21.0,"male":1.0,"glucose":89.0,"hdl":65.0,"triglycerides":46.0,"RHR_FreeLiving_median":61.5,"HRV_FreeLiving_median":36.7,"STEPS_Daily_median":6296.0,"SLEEP_Duration_median":555.0,"homa":0.62},{"age":36.0,"bmi":36.2,"male":1.0,"glucose":88.0,"hdl":42.0,"triglycerides":159.0,"RHR_FreeLiving_median":70.0,"HRV_FreeLiving_median":44.5,"STEPS_Daily_median":6277.0,"SLEEP_Duration_median":429.5,"homa":3.15},{"age":59.0,"bmi":27.8,"male":1.0,"glucose":89.0,"hdl":50.0,"triglycerides":84.0,"RHR_FreeLiving_median":71.5,"HRV_FreeLiving_median":21.3,"STEPS_Daily_median":19838.0,"SLEEP_Duration_median":183.0,"homa":1.93},{"age":69.0,"bmi":22.5,"male":0.0,"glucose":75.0,"hdl":87.0,"triglycerides":92.0,"RHR_FreeLiving_median":56.0,"HRV_FreeLiving_median":30.5,"STEPS_Daily_median":7094.0,"SLEEP_Duration_median":429.0,"homa":0.48},{"age":55.0,"bmi":22.8,"male":1.0,"glucose":100.0,"hdl":42.0,"triglycerides":81.0,"RHR_FreeLiving_median":61.0,"HRV_FreeLiving_median":20.4,"STEPS_Daily_median":4150.0,"SLEEP_Duration_median":476.5,"homa":1.09},{"age":36.0,"bmi":28.5,"male":1.0,"glucose":84.0,"hdl":51.0,"triglycerides":114.0,"RHR_FreeLiving_median":62.0,"HRV_FreeLiving_median":24.8,"STEPS_Daily_median":10683.0,"SLEEP_Duration_median":374.0,"homa":0.93},{"age":51.0,"bmi":20.5,"male":0.0,"glucose":92.0,"hdl":73.0,"triglycerides":59.0,"RHR_FreeLiving_median":71.0,"HRV_FreeLiving_median":31.8,"STEPS_Daily_median":13704.0,"SLEEP_Duration_median":548.0,"homa":0.64},{"age":35.0,"bmi":21.3,"male":0.0,"glucose":86.0,"hdl":62.0,"triglycerides":50.0,"RHR_FreeLiving_median":62.0,"HRV_FreeLiving_median":46.9,"STEPS_Daily_median":9812.5,"SLEEP_Duration_median":512.0,"homa":1.08},{"age":49.0,"bmi":24.0,"male":0.0,"glucose":86.0,"hdl":79.0,"triglycerides":40.0,"RHR_FreeLiving_median":65.0,"HRV_FreeLiving_median":26.4,"STEPS_Daily_median":9735.5,"SLEEP_Duration_median":460.0,"homa":0.68},{"age":62.0,"bmi":24.1,"male":1.0,"glucose":98.0,"hdl":66.0,"triglycerides":66.0,"RHR_FreeLiving_median":79.0,"HRV_FreeLiving_median":10.1,"STEPS_Daily_median":3680.0,"SLEEP_Duration_median":503.0,"homa":2.86},{"age":51.0,"bmi":31.1,"male":0.0,"glucose":90.0,"hdl":66.0,"triglycerides":99.0,"RHR_FreeLiving_median":68.0,"HRV_FreeLiving_median":32.5,"STEPS_Daily_median":7041.0,"SLEEP_Duration_median":469.0,"homa":1.44},{"age":28.0,"bmi":25.2,"male":0.0,"glucose":85.0,"hdl":71.0,"triglycerides":116.0,"RHR_FreeLiving_median":74.0,"HRV_FreeLiving_median":29.2,"STEPS_Daily_median":6688.0,"SLEEP_Duration_median":483.0,"homa":1.99},{"age":45.0,"bmi":26.5,"male":0.0,"glucose":92.0,"hdl":59.0,"triglycerides":81.0,"RHR_FreeLiving_median":83.0,"HRV_FreeLiving_median":13.5,"STEPS_Daily_median":12281.0,"SLEEP_Duration_median":447.0,"homa":1.48},{"age":35.0,"bmi":22.5,"male":1.0,"glucose":104.0,"hdl":65.0,"triglycerides":71.0,"RHR_FreeLiving_median":69.0,"HRV_FreeLiving_median":34.0,"STEPS_Daily_median":7626.0,"SLEEP_Duration_median":369.0,"homa":2.9},{"age":63.0,"bmi":30.9,"male":1.0,"glucose":97.0,"hdl":67.0,"triglycerides":64.0,"RHR_FreeLiving_median":73.0,"HRV_FreeLiving_median":13.6,"STEPS_Daily_median":5715.0,"SLEEP_Duration_median":493.5,"homa":4.02},{"age":43.0,"bmi":28.5,"male":1.0,"glucose":100.0,"hdl":45.0,"triglycerides":77.0,"RHR_FreeLiving_median":68.0,"HRV_FreeLiving_median":26.8,"STEPS_Daily_median":4895.5,"SLEEP_Duration_median":527.5,"homa":3.11},{"age":26.0,"bmi":32.8,"male":0.0,"glucose":87.0,"hdl":45.0,"triglycerides":85.0,"RHR_FreeLiving_median":61.0,"HRV_FreeLiving_median":79.0,"STEPS_Daily_median":11053.0,"SLEEP_Duration_median":472.0,"homa":1.42},{"age":58.0,"bmi":24.3,"male":1.0,"glucose":101.0,"hdl":46.0,"triglycerides":99.0,"RHR_FreeLiving_median":72.0,"HRV_FreeLiving_median":19.8,"STEPS_Daily_median":5826.0,"SLEEP_Duration_median":466.0,"homa":4.02},{"age":44.0,"bmi":35.9,"male":0.0,"glucose":91.0,"hdl":66.0,"triglycerides":98.0,"RHR_FreeLiving_median":68.0,"HRV_FreeLiving_median":37.0,"STEPS_Daily_median":9224.0,"SLEEP_Duration_median":421.0,"homa":2.4},{"age":45.0,"bmi":33.2,"male":1.0,"glucose":102.0,"hdl":63.0,"triglycerides":67.0,"RHR_FreeLiving_median":73.0,"HRV_FreeLiving_median":17.9,"STEPS_Daily_median":7647.5,"SLEEP_Duration_median":401.0,"homa":4.11}],"n":1165,"prev":0.2575107296137339};
+const L={age:["Age","yrs",0],bmi:["BMI","",1],male:["Sex","",0],glucose:["Fasting glucose","mg/dL",0],hdl:["HDL","mg/dL",0],triglycerides:["Triglycerides","mg/dL",0],RHR_FreeLiving_median:["Resting HR","bpm",0],HRV_FreeLiving_median:["HRV","ms",0],STEPS_Daily_median:["Daily steps","",0],SLEEP_Duration_median:["Sleep","min",0]};
+const LAB=["glucose","hdl","triglycerides"],WEAR=["RHR_FreeLiving_median","HRV_FreeLiving_median","STEPS_Daily_median","SLEEP_Duration_median"];
+const F=M.features,v={};F.forEach(f=>v[f]=M.med[f]);
+const $=id=>document.getElementById(id);
+$("dn").textContent=M.n.toLocaleString();$("au").textContent="0.89 (with labs), 0.78 (demographics only)";
+const box=$("ctls");
+F.forEach(f=>{const r=document.createElement("div");r.className="ctl";const q=M.q[f];
+if(f==="male"){r.innerHTML=`<span>${L[f][0]}</span><select id="c_${f}" style="padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)"><option value="0">Female</option><option value="1">Male</option></select><output></output>`;
+}else{const lo=Math.floor(q[0]),hi=Math.ceil(q[1]);r.innerHTML=`<span>${L[f][0]}</span><input type="range" id="c_${f}" min="${lo}" max="${hi}" step="${f==='bmi'?0.1:1}"><output id="o_${f}"></output>`;}
+box.appendChild(r);$("c_"+f).addEventListener("input",e=>{v[f]=+e.target.value;calc()});});
+function sync(){F.forEach(f=>{$("c_"+f).value=v[f];if($("o_"+f))$("o_"+f).textContent=(+v[f]).toFixed(L[f][2]?1:0)});}
+function eff(f){if(!$("uL").checked&&LAB.includes(f))return M.med[f];if(!$("uW").checked&&WEAR.includes(f))return M.med[f];return v[f];}
+function calc(){let z=M.b;const cs=[];F.forEach((f,i)=>{const x=eff(f);z+=M.coef[i]*(x-M.mean[i])/M.scale[i];cs.push([f,M.coef[i]*(x-M.med[f])/M.scale[i]]);});
+const p=1/(1+Math.exp(-z));$("pr").textContent=Math.round(p*100)+"%";$("gp").style.left=(p*100)+"%";
+const t=$("tagr");t.textContent=p>=.5?"Likely insulin resistant":p>=.25?"Elevated risk":"Low risk";t.style.background=p>=.5?"var(--b)":p>=.25?"#e0b83a":"var(--g)";t.style.color="#06121b";
+cs.sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));const mx=Math.max(.3,...cs.map(c=>Math.abs(c[1])));
+$("cbs").innerHTML=cs.slice(0,6).map(([f,c])=>{const w=Math.abs(c)/mx*50;return `<div class="cb"><span>${L[f][0]}</span><div><b style="${c>=0?'left:50%':'right:50%'};width:${w}%;background:${c>=0?'var(--b)':'var(--g)'}"></b></div></div>`}).join("")+`<p style="font-size:12px;color:var(--mute);margin:6px 0 0">Orange raises risk, green lowers it, relative to the median participant.</p>`;
+sync();return p;}
+$("uL").onchange=$("uW").onchange=()=>{calc()};
+$("rst").onclick=()=>{F.forEach(f=>v[f]=M.med[f]);$("truth").style.display="none";calc()};
+$("rnd").onclick=()=>{const P=M.people[Math.floor(Math.random()*M.people.length)];F.forEach(f=>{const q=M.q[f];v[f]=Math.min(Math.max(P[f],Math.floor(q[0])),Math.ceil(q[1]))});const p=calc();
+const ir=P.homa>2.9,pr=p>=.5;$("truth").style.display="block";$("truth").innerHTML=`Real participant: measured HOMA-IR = <b>${P.homa}</b> (${ir?"insulin resistant":"not IR"}). Model says <b>${pr?"IR":"not IR"}</b>: ${ir===pr?"correct ✓":"missed ✗"}.`};
+calc();
+</script>
+</body>
+</html>
