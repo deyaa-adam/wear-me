@@ -5,6 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>WEAR-ME</title>
 <style>
+.video-container {
+    width: 100%;
+    max-width: 800px; /* Adjust or remove to set maximum width */
+    aspect-ratio: 16 / 9;
+  }
+
+  .video-container iframe {
+    width: 100%;
+    height: 100%;
+  }
+  .pdf-container {
+    width: 100%;
+    max-width: 1000px; /* Optional maximum width constraint */
+    height: 80vh;      /* Scales height based on viewport height */
+    min-height: 400px;  /* Ensures visibility on small phone screens */
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .pdf-container object {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
 :root{--bg:#f6f9fb;--card:#fff;--ink:#0f2433;--mute:#53687a;--line:#dbe5ec;--a:#0e6fa0;--b:#e8742a;--g:#1f7a3f;--soft:#e6f2f8;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1620;--card:#13222f;--ink:#e8f1f7;--mute:#9db2c3;--line:#223647;--a:#4fb3e3;--b:#f09a5c;--g:#5fc58a;--soft:#12303f}}
@@ -72,19 +98,28 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--mute);fo
 </style>
 </head>
 <body>
-<nav><div class="w"><b>WEAR-ME</b><a href="#problem">Problem</a><a href="#method">Method</a><a href="#results">Results</a><a href="#agent">IR Agent</a><a href="#demo">Live Demo</a><a href="#ours">Our Work</a><a href="#team">Team</a></div></nav>
+<!--<nav><div class="w"><b>WEAR-ME</b><a href="#problem">Problem</a><a href="#method">Method</a><a href="#results">Results</a><a href="#agent">IR Agent</a><a href="#demo">Live Demo</a><a href="#ours">Our Work</a><a href="#team">Team</a></div></nav>-->
 
 <header><div class="w">
-<div class="pill">Project 1 · Multimodal AI for metabolic health</div>
-<h1>Predicting <span>insulin resistance</span> from wearables and routine blood tests</h1>
+<!--<div class="pill">Project 1 · Multimodal AI for metabolic health</div>-->
+<h1>WEAR-ME: Predicting <span>insulin resistance</span> from wearables and routine blood tests</h1>
 <p class="lead">We studied the WEAR-ME clinical study, which blends continuous smartwatch data with standard lab biomarkers to flag insulin resistance years before type 2 diabetes appears, without an invasive clamp test.</p>
 <div class="stats">
 <div class="stat"><strong>1,165</strong><small>participants in the discovery cohort</small></div>
 <div class="stat"><strong>0.80</strong><small>AUROC (HOMA-IR cut-off 2.9)</small></div>
 <div class="stat"><strong>40M h</strong><small>of sensor data behind the WFM</small></div>
 <div class="stat"><strong>82%</strong><small>reliance on wearables with WFM, up from 43%</small></div>
-<iframe width="70%" height="auto" src="https://www.youtube.com/embed/OEVzeOH6LqU?si=Ahyy07WmC42PKLMl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div></div></header>
+<center><div class="video-container">
+  <iframe 
+    src="https://www.youtube.com/embed/OEVzeOH6LqU?si=Ahyy07WmC42PKLMl" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    referrerpolicy="strict-origin-when-cross-origin" 
+    allowfullscreen>
+  </iframe>
+</div></center>
 
 <section id="problem"><div class="w">
 <h2>Why it matters</h2>
@@ -135,6 +170,19 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--mute);fo
 </div></div></section>
 
 
+
+<section id="ours"><div class="w">
+<h2>Our work</h2>
+<p class="sub">Beyond reviewing the paper, we reproduced the exploratory analysis on the study data in Google Colab.</p>
+
+<iframe 
+  src="https://drive.google.com/file/d/1kaY50zyoqA0hOHPCYzZqT7qOrlsjIWZk/preview" 
+  width="100%" 
+  height="600" 
+  allow="autoplay"
+  style="border: none;">
+</iframe>
+</div></section>
 <section id="demo"><div class="w">
 <h2>Live demo</h2>
 <p class="sub">A simulation trained on the real WEAR-ME dataset (n = <span id="dn"></span>). Move the sliders, or load an actual participant and compare the prediction with their measured HOMA-IR.</p>
@@ -157,22 +205,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--mute);fo
 </div></div>
 <p class="note" style="margin-top:16px">This is a transparent logistic regression on summary features, not the paper’s Wearable Foundation Model. It runs fully in your browser, and wearables contribute less here than in the paper because no foundation-model embeddings are used.</p>
 </div></section>
-<section id="ours"><div class="w">
-<h2>Our work</h2>
-<p class="sub">Beyond reviewing the paper, we reproduced the exploratory analysis on the study data in Google Colab.</p>
-<div class="grid">
-<div class="card"><h3>Steps vs HOMA-IR</h3><p>Scatter with LOWESS trend, colored by BMI: more activity, lower insulin resistance.</p></div>
-<div class="card"><h3>Resting heart rate</h3><p>Violin plots across IS, impaired and IR groups.</p></div>
-<div class="card"><h3>Correlation matrix</h3><p>Wearable features and blood biomarkers against HOMA-IR.</p></div>
-<div class="card"><h3>Lipids and BMI</h3><p>Triglycerides, HDL and BMI relationships with HOMA-IR.</p></div>
-</div>
-<p class="note" style="margin-top:18px">Add your own figures and live demo here. Replace these cards with images from your Colab notebooks.</p>
-</div></section>
 
-<section><div class="w">
-<h2>Next: Project 2</h2>
-<p class="sub">We move from understanding the model to hands-on development and optimization of the pipeline.</p>
-</div></section>
 
 <section id="team"><div class="w">
 <h2>Team</h2>
