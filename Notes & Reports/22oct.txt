@@ -1,0 +1,25 @@
+**Main Points:
+
+1- Data Analysis:
+	Which variables do we need the most?
+	Clean & Analyse
+2- Website Development (HTML + CSS + JS):
+	User-Friendly Interface
+	Live Demo (Simulation, if )
+3- AI Agent Chatbot (Google AI Studio)
+	RAG -> Knowledge Base
+4- WFM (If Applicable):
+	Bring a Wearble Device
+	Connect with API
+	Real-time analysis
+
+Note1: Create a Github account ASAP (Best Place for Technical Projects)
+Note2: Discuss these points with Dr. Yazan, if everything is OK, start with the first 3 points (split the work depending on skills, each member should work on one point)
+Note3: If you have finished the first 3 points, start with the 4th point.
+Note4: Everything should be documented as it happens, this will help you with report writing
+Note5: Start with a small paper (4-6 Pages) then expand it to a full report (50+ Pages)
+Note6: It's better if one person with the best english language skills works on the report (Please don't use AI in writing😬) 
+
+You can check my paper for your review: https://www.researchgate.net/publication/413624940_AIN_Surgical_A_Low-Cost_Framework_for_Synthetic_Data_Generation_in_Surgical_Robotics_Using_High-Fidelity_Clinical_Simulation
+
+Good Luck Team🔥
